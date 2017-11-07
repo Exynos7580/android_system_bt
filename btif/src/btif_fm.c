@@ -389,7 +389,7 @@ static void btif_fm_upstreams_evt(UINT16 event, char* p_evt_data)
             APPL_TRACE_DEBUG("%s: event= BTA_FM_ENABLE_EVT", __func__);
             // wait 150 ms for the FM engine to stabilize in stress situation
             // TODO Fine tune
-            usleep(150000);
+            usleep(15000);
             memset(&btif_fm_data, 0, sizeof(tBTIF_FM_Data));
             HAL_CBACK(bt_fm_callbacks, enable_cb, p_fm_evt_data->status);
             break;
@@ -416,7 +416,7 @@ static void btif_fm_upstreams_evt(UINT16 event, char* p_evt_data)
         case BTA_FM_DISABLE_EVT:
             APPL_TRACE_DEBUG("%s: event= BTA_FM_DISABLE_EVT", __func__);
             // TODO Fine tune
-            usleep(300000);
+            usleep(30000);
             stack_manager_get_interface()->shut_down_radio();
             HAL_CBACK(bt_fm_callbacks, disable_cb, p_fm_evt_data->status);
             break;
@@ -611,8 +611,25 @@ static int btif_fm_init (btfm_callbacks_t* callbacks )
 int btif_fm_enable (int functionalityMask)
 {
     CHECK_BTFM_INIT();
+
     stack_manager_get_interface()->start_up_radio();
+
     BTA_FmEnable(functionalityMask, btif_fm_cback, BTIF_RDS_APP_ID);
+
+    //if  (!stack_manager_get_interface()->get_stack_is_running()) {
+    //stack_manager_get_interface()->start_up_stack_async();
+    //}
+    //else {
+    //reon = true;
+//    stack_manager_get_interface()->start_up_stack_async();
+    //}
+
+
+
+    //stack_manager_get_interface()->shut_down_stack_async();
+    //if (reon)
+    //stack_manager_get_interface()->start_up_stack_async();
+
     return BTA_SUCCESS;
 }
 
@@ -835,11 +852,17 @@ static int btif_fm_set_search_criteria(int value)
 static int btif_fm_disable(void)
 {
     CHECK_BTFM_INIT();
+    LOG_INFO(LOG_TAG, "%s FM_DBG FM_DISABLE start", __func__);
+
+
 
     /* Disable FM */
     memset(&btif_fm_data, 0, sizeof(tBTIF_FM_Data));
 
     BTA_FmDisable();
+
+    LOG_INFO(LOG_TAG, "%s FM_DBG FM_DISABLE end", __func__);
+
 
     return BTA_SUCCESS;
 

@@ -113,6 +113,7 @@ enum
 };
 typedef UINT8   tBTA_FM_STATUS;
 
+
 /* FM band region, bit 0, 1,2 of func_mask */
 #ifndef BTA_MAX_REGION_SETTING
 #if BTA_FM_10KHZ_INCLUDED == TRUE

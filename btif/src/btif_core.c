@@ -680,10 +680,10 @@ void btif_disable_bluetooth_evt(void)
     BTIF_TRACE_DEBUG("%s", __FUNCTION__);
 
 #ifdef BOARD_HAVE_FMRADIO_BCM
-//    if (stack_manager_get_interface()->get_radio_is_running()) {
-//        future_ready(stack_manager_get_hack_future(), FUTURE_SUCCESS);
-//        return;
-//    }
+    if (stack_manager_get_interface()->get_radio_is_running()) {
+        future_ready(stack_manager_get_hack_future(), FUTURE_SUCCESS);
+        return;
+    }
 #endif
 
 
