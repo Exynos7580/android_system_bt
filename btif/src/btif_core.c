@@ -565,7 +565,7 @@ void btif_enable_bluetooth_evt(tBTA_STATUS status)
 
     BTIF_TRACE_DEBUG("%s: status %d, local bd [%s]", __FUNCTION__, status, bdstr);
 
-    //ssr_triggered = FALSE;
+    ssr_triggered = FALSE;
 
     if (bdcmp(btif_local_bd_addr.address, controller->get_address()->address))
     {
@@ -687,6 +687,12 @@ void btif_disable_bluetooth_evt(void)
 #endif
 
 
+
+    if (ssr_triggered == TRUE)
+    {
+       BTIF_TRACE_DEBUG("%s SSR triggered,Ignore EVT",__FUNCTION__);
+       return;
+    }
 
 #if (defined(HCILP_INCLUDED) && HCILP_INCLUDED == TRUE)
     bte_main_enable_lpm(FALSE);
