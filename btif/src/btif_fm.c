@@ -43,7 +43,9 @@
 #include "btif_fm.h"
 #include "bt_common.h"
 #include "stack_manager.h"
-
+#include "hci/include/bt_vendor_lib.h"
+#include "hci/include/vendor.h"
+#include "osi/include/log.h"
 
 
 /*****************************************************************************
@@ -73,6 +75,9 @@
 #define BTIF_FM_AUDIO_PATH_SPEAKER         1
 #define BTIF_FM_AUDIO_PATH_WIRED_HEADSET   2
 #define BTIF_FM_AUDIO_PATH_DIGITAL         3
+
+//HACK copyright © 2017 stenkinevgeniy@gmail.com reversed from samsung blob (Galaxy A3 2016)
+#define FM_PCM_CONFIG_OPCODE               11
 
 
 /*****************************************************************************
@@ -607,6 +612,19 @@ static int btif_fm_init (btfm_callbacks_t* callbacks )
     return BTA_SUCCESS;
 }
 
+//HACK copyright © 2017 stenkinevgeniy@gmail.com reversed from samsung blob (Galaxy A3 2016)
+void vendor_pcm_config()
+{
+    
+    UINT16 test_parm = 0;
+    LOG_INFO(LOG_TAG, "%s FM_DBG  try pcm pin config", __func__);
+
+    vendor_get_interface()->send_command((vendor_opcode_t)FM_PCM_CONFIG_OPCODE, (void*)&test_parm);
+    usleep(40000);
+}
+
+
+
 /** Enable Fm. */
 int btif_fm_enable (int functionalityMask)
 {
@@ -614,21 +632,9 @@ int btif_fm_enable (int functionalityMask)
 
     stack_manager_get_interface()->start_up_radio();
 
+    vendor_pcm_config();
+
     BTA_FmEnable(functionalityMask, btif_fm_cback, BTIF_RDS_APP_ID);
-
-    //if  (!stack_manager_get_interface()->get_stack_is_running()) {
-    //stack_manager_get_interface()->start_up_stack_async();
-    //}
-    //else {
-    //reon = true;
-//    stack_manager_get_interface()->start_up_stack_async();
-    //}
-
-
-
-    //stack_manager_get_interface()->shut_down_stack_async();
-    //if (reon)
-    //stack_manager_get_interface()->start_up_stack_async();
 
     return BTA_SUCCESS;
 }

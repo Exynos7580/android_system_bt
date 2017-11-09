@@ -287,7 +287,9 @@ static void event_start_up_radio(void *context) {
     return;
   }
 
+  if (!stack_is_running) {
   ensure_stack_is_initialized();
+  }
 
   LOG_INFO(LOG_TAG,"%s FM_DBG is bringing up the radio.", __func__);
   radio_is_running = true;
