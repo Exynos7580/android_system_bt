@@ -320,7 +320,12 @@ static future_t *start_up(void) {
   power_state = BT_VND_PWR_ON;
   vendor->send_command(VENDOR_CHIP_POWER_CONTROL, &power_state);
 
-  LOG_DEBUG(LOG_TAG, "%s starting async portion", __func__);
+  LOG_INFO(LOG_TAG, "%s PIN_DBG start pcm pin config", __func__);
+
+  //int test_parm = 0x503;
+  //vendor->send_command(11, &test_parm);
+
+  LOG_INFO(LOG_TAG, "%s starting async portion", __func__);
   thread_post(thread, event_finish_startup, NULL);
   hci_state = HCI_STARTED;
   return local_startup_future;
